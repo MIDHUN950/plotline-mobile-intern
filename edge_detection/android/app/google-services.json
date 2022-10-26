@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1088895213579",
+    "project_id": "edge-detection-plotline",
+    "storage_bucket": "edge-detection-plotline.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088895213579:android:c7a0564c1051a747faa70e",
+        "android_client_info": {
+          "package_name": "com.example.edge_detection"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088895213579-gfe1smlp0r3tih3koa6m2r9ru2o0mnpt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAd3C41xiKTD9sXhb-9ovy4_SJk14BSuoY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088895213579-gfe1smlp0r3tih3koa6m2r9ru2o0mnpt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
