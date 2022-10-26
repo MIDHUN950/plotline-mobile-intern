@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:edge_detection/screen/preview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,8 +14,10 @@ import 'package:progress_loading_button/progress_loading_button.dart';
 import 'package:path/path.dart' as p;
 
 
-void main() {
-
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  await FirebaseAuth.instance.signInAnonymously();
   runApp(const MyApp());
 }
 
@@ -77,33 +81,29 @@ class _MyHomePageState extends State<MyHomePage> {
       print(e);
     }
   }
-  Future<File?> convertUriToFile(Uri uriString) async {
+  Future<void> convertUriToFile(Uri uriString) async {
     try {
       final http.Response responseData = await http.get(uriString);
       var uint8list = responseData.bodyBytes;
       var buffer = uint8list.buffer;
       ByteData byteData = ByteData.view(buffer);
       var tempDir = await getTemporaryDirectory();
+      if(await File('${tempDir.path}/img.jpg').exists()){
+        File('${tempDir.path}/img.jpg').delete();
+      }
       File file = await File('${tempDir.path}/img.jpg').writeAsBytes(
           buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
       print(file.path);
-      return file;
+      print(p.extension(file.path));
+      if(file != null) {
+        Navigator.push(context, MaterialPageRoute(builder: (context) =>
+            ResultPreview(title: "Preview",
+              path: file.path,
+              ext: p.extension(file.path),)));
+      }
     } catch (e) {
       print(e); // General exception
     }
-    return null;
-  }
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
   }
   _toast(String msg){
     Fluttertoast.showToast(
@@ -202,15 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   onPressed: () async {
                     if(_checkUrl(url.text)){
-                      File? file = await convertUriToFile(Uri.parse(url.text));
-                      try{
-                        print(p.extension(file!.path));
-                        if(file != null){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPreview(title: "Preview", path: file.path,ext: p.extension(file.path),)));
-                        }
-                      } catch(e){
-                        print(e);
-                      }
+                      convertUriToFile(Uri.parse(url.text));
                     }
                   },
                 ),
